@@ -47,6 +47,7 @@
 
 #define GLFW_INCLUDE_NONE
 #include "../include/GLFW/glfw3.h"
+#include "../include/GLFW/glfw3customtitlebar.h"
 
 #include <stdbool.h>
 
@@ -405,6 +406,7 @@ struct _GLFWwndconfig
     GLFWbool      resizable;
     GLFWbool      visible;
     GLFWbool      decorated;
+    GLFWbool      customTitleBar;
     GLFWbool      focused;
     GLFWbool      autoIconify;
     GLFWbool      floating;
@@ -533,6 +535,7 @@ struct _GLFWwindow
     // Window settings and state
     GLFWbool            resizable;
     GLFWbool            decorated;
+    GLFWbool            customTitleBar;
     GLFWbool            autoIconify;
     GLFWbool            floating;
     GLFWbool            focusOnShow;
@@ -554,6 +557,7 @@ struct _GLFWwindow
     GLFWbool            lockKeyMods;
     GLFWbool            disableMouseButtonLimit;
     int                 cursorMode;
+    CustomTitleBarHit   customTitleBarHit;
     char                mouseButtons[GLFW_MOUSE_BUTTON_LAST + 1];
     char                keys[GLFW_KEY_LAST + 1];
     // Virtual cursor position when cursor is disabled
@@ -572,6 +576,7 @@ struct _GLFWwindow
         GLFWwindowmaximizefun     maximize;
         GLFWframebuffersizefun    fbsize;
         GLFWwindowcontentscalefun scale;
+        GLFWcustomtitlebarhittestfun    ctbhittest;
         GLFWmousebuttonfun        mouseButton;
         GLFWcursorposfun          cursorPos;
         GLFWcursorenterfun        cursorEnter;
@@ -750,6 +755,7 @@ struct _GLFWplatform
     void (*waitEvents)(void);
     void (*waitEventsTimeout)(double);
     void (*postEmptyEvent)(void);
+    void (*setWindowCustomTitleBar)(_GLFWwindow*,GLFWbool);
     // EGL
     EGLenum (*getEGLPlatform)(EGLint**);
     EGLNativeDisplayType (*getEGLNativeDisplay)(void);
@@ -920,6 +926,7 @@ GLFWproc _glfwPlatformGetModuleSymbol(void* module, const char* name);
 void _glfwInputWindowFocus(_GLFWwindow* window, GLFWbool focused);
 void _glfwInputWindowPos(_GLFWwindow* window, int xpos, int ypos);
 void _glfwInputWindowSize(_GLFWwindow* window, int width, int height);
+void _glfwInputCustomTitleBarHitTest(_GLFWwindow* window, int posX, int posY, int* hit);
 void _glfwInputFramebufferSize(_GLFWwindow* window, int width, int height);
 void _glfwInputWindowContentScale(_GLFWwindow* window,
                                   float xscale, float yscale);
